@@ -1,0 +1,9 @@
+return {
+  _all = {
+    -- verbose = true,
+    -- coverage = true,
+  },
+  default = {
+    ROOT = "tests",
+  },
+}
