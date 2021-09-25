@@ -5,5 +5,6 @@ return {
   },
   default = {
     ROOT = "tests",
+    lpath = "nvim-rss/?.lua"
   },
 }
