@@ -1,0 +1,27 @@
+-- TODO See nvim-rss_spec
+
+local db = require("nvim-rss.modules.db")
+
+describe("db.lua test suite", function()
+  it("should create a feeds list main table", function()
+  end)
+  it("should update the feeds list main table", function()
+  end)
+  it("should create a new feeds table", function()
+  end)
+  it("should remove a dead feeds table", function()
+  end)
+  it("should add a feed", function()
+  end)
+  it("should add a list of feeds table", function()
+  end)
+  it("should update a feed ", function()
+  end)
+  it("should remove a feed", function()
+  end)
+  it("should read a feeds by id", function()
+  end)
+  it("should read the latest feed for a table", function()
+  end)
+
+end)
