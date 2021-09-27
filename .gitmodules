@@ -1,0 +1,6 @@
+[submodule "lua/Lua-Simple-XML-Parser"]
+	path = lua/Lua-Simple-XML-Parser
+	url = https://github.com/Cluain/Lua-Simple-XML-Parser
+[submodule "lua-feedparser"]
+	path = lua-feedparser
+	url = https://github.com/slact/lua-feedparser.git
