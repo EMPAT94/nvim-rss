@@ -1,67 +1,121 @@
 local DB = {}
 
--- TODO 
--- dir will be user editable
--- better table names preferable
-local database_path = "nvim.rss.db"
-local feed_list_table = "feed_list"
 local sqlite = require("sqlite")
-local db = sqlite {
-  uri = database_path,
-  [feed_list_table] = {
-    id = true, -- integer, primary
-    title = "text",
-    description = "text",
-    htmlUrl = "text",
-    xmlUrl = "text",
-    updated = "text",
-    lastestEntry = "text",
-    lastReadEntry = "text",
-    category = "text",
+local sqlite_tbl = require("sqlite.tbl")
+
+local feed_table = "feeds"
+local feed_schema = {
+  link = { -- feed url, also id in atom
+    "text",
+    primary = true,
+    unique = true,
+  },
+  title = {
+    "text",
+    required = true,
+  },
+  subtitle = {
+    "text",
+    required = true,
+  },
+  version = { -- is "atom10" or "rss20" etc
+    "text",
+    required = true,
+  },
+  format = { -- is "atom" or "rss"
+    "text",
+    required = true,
+  },
+  htmlUrl = { -- site url
+    "text",
+    required = true,
+  },
+  updated = {
+    "text",
+    required = true,
+  },
+  rights = "text",
+  generator = "text",
+  author = "text",
+}
+
+local entry_table = "entries"
+local entry_schema = {
+  link = { -- item url
+    "text",
+    required = true,
+    unique = true,
+    primary = true,
+  },
+  title = {
+    "text",
+    required = true,
+  },
+  summary = { -- aka content, description et al
+    "text",
+    required = true,
+  },
+  updated = {
+    "text",
+    required = true,
+  },
+  feed = {
+    type = "text",
+    required = true,
+    reference = "feeds.link",
+  },
+
+  -- nvim.rss keys
+  seen = {
+    "integer", -- timestamp (s) when opened
+    required = true,
   },
 }
 
-local spawn = vim.loop.spawn
-local new_pipe = vim.loop.new_pipe
-local wrap = vim.schedule_wrap
+-- TODO
+-- dir will be user editable
+-- better table names preferable
+local database_path = "nvim.rss.db"
 
--- INTERNAL FUNCTIONS START (defined by '_' underscore)
+local db = sqlite {
+  uri = database_path,
+  [feed_table] = feed_schema,
+  [entry_table] = entry_schema,
+}
 
-function DB._verify_feed_list_exists()
-  if (not db:isopen()) then
-    db:open()
-    if (not db:exists(feed_list_table)) then error("There was an error creating main table!") end
-    db:close()
+function DB.update_feed(parsed_feed)
+  if (db:isclose()) then db:open() end
+
+  local feed = {
+    link = parsed_feed.xmlUrl,
+    title = parsed_feed.feed.title,
+    subtitle = parsed_feed.feed.subtitle,
+    version = parsed_feed.version,
+    format = parsed_feed.format,
+    htmlUrl = parsed_feed.feed.link,
+    updated = parsed_feed.feed.updated,
+    rights = parsed_feed.feed.rights,
+    generator = parsed_feed.feed.generator,
+    author = parsed_feed.feed.author,
+  }
+
+  local er, ms = db:insert(feed_table, feed)
+
+  local entries = {}
+  for _, entry in ipairs(parsed_feed.entries) do
+    table.insert(entries, {
+      link = entry.link,
+      title = entry.title,
+      summary = entry.summary,
+      updated = entry.updated,
+      feed = parsed_feed.xmlUrl,
+      seen = 0
+    })
   end
-end
 
-function DB._update_feed_list_table()
-end
+  local e, m = db:insert(entry_table, entries)
 
--- INTERNAL FUNCTIONS END
-
-function DB.create_feed_table(table_name)
-end
-
-function DB.remove_feed_table()
-end
-
-function DB.add_feed()
-end
-
-function DB.add_feeds()
-end
-
-function DB.update_feed()
-end
-
-function DB.remove_feed()
-end
-
-function DB.read_feed_by_id()
-end
-
-function DB.read_latest_feed()
+  db:close()
 end
 
 return DB

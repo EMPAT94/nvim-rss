@@ -27,7 +27,8 @@ end
 
 -- Refresh content for feed under cursor
 function M.fetch_feed()
-  -- local url = api.nvim_get_current_line()
+  -- local  xmlUrl = api.nvim_get_current_line()
+  local xmlUrl = "https://www.priteshtupe.com/feed.xml"
   print("Fetching data...")
 
   local raw_feed = ""
@@ -36,10 +37,10 @@ function M.fetch_feed()
   local stderr = new_pipe(false)
 
   handle = spawn(curl, {
-    args = { "https://www.priteshtupe.com/feed.xml" },
+    args = { xmlUrl },
     stdio = { stdin, stdout, stderr },
   }, wrap(function(err, msg)
-    parse_data(raw_feed)
+    parse_data(raw_feed, xmlUrl)
 
     stdin:shutdown()
     stdout:read_stop()
@@ -61,10 +62,11 @@ function M.fetch_feed()
   end))
 end
 
-function parse_data(raw_feed)
-  local parsed = feedparser.parse(raw_feed)
+function parse_data(raw_feed, xmlUrl)
+  local parsed_feed = feedparser.parse(raw_feed)
   raw_feed = ""
-  print("DONE!")
+  parsed_feed.xmlUrl = xmlUrl
+  db.update_feed(parsed_feed)
 end
 
 function M.setup(user_options)
