@@ -8,6 +8,16 @@ I aim for it to be similar to the excellent [vnews](https://github.com/danchoi/v
 
 Ideally, if you have a bunch of feeds and wish to simply view them in neovim instead of browsers or dedicated apps, then this plugin should help you out.
 
+## Pre-requisites
+
+TODO: Add links, versions and descriptions
+
+1. neovim-0.5
+2. curl
+3. sqlite3
+4. feed-parser (from luarocks) (depends on expat)
+5. sqlite.lua (from luarocks) (depends on luv)
+
 ## Installing
 
 Will update when I have a working minimal setup.
@@ -15,7 +25,7 @@ Will update when I have a working minimal setup.
 ## Current Progress and Todos
 
 - [x] Fetch & parse feeds
-- [ ] Setup a database
+- [x] Setup a database
 - [ ] Update UI for new feed data
 - [ ] Add user interaction to RSS View
 - [ ] Release v0.1 (Deadline : 13th Oct 2021)
