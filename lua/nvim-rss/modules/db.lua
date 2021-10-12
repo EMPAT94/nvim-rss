@@ -16,11 +16,9 @@ local feed_schema = {
   },
   subtitle = {
     "text",
-    required = true,
   },
   version = { -- is "atom10" or "rss20" etc
     "text",
-    required = true,
   },
   format = { -- is "atom" or "rss"
     "text",
@@ -49,7 +47,6 @@ local entry_schema = {
   },
   summary = { -- aka content, description et al
     "text",
-    required = true,
   },
   feed = {
     type = "text",
@@ -66,18 +63,15 @@ local entry_schema = {
   },
 }
 
--- TODO
--- dir will be user editable
--- better table names preferable
-local database_path = "nvim.rss.db"
+local feeds_db = "nvim.rss.db"
 
 local db = sqlite {
-  uri = database_path,
+  uri = feeds_db,
   [feed_table] = feed_schema,
   [entry_table] = entry_schema,
 }
 
-function _upsert_feed(feed)
+local function _upsert_feed(feed)
 
   local feed_row = db:tbl(feed_table):where({
     link = feed.link,
@@ -86,7 +80,7 @@ function _upsert_feed(feed)
   if (not feed_row) then local e, m = db:tbl(feed_table):insert(feed) end
 end
 
-function _insert_new_entries(parsed_feed)
+local function _insert_new_entries(parsed_feed)
   local entries = db:tbl(entry_table):get({
     where = {
       feed = parsed_feed.xmlUrl,
@@ -112,8 +106,11 @@ function _insert_new_entries(parsed_feed)
     -- Check whether entry exists in db or not
     local exists = false
 
-    -- If updated time is not present, compare links
-    if (not entry.updated_parsed) then
+    -- Discard all whose updated time is less than that in db
+    if (entry.updated_parsed and last_updated >= tonumber(entry.updated_parsed)) then exists = true end
+
+    -- If updated time is not present, compare link
+    if (not exists) then
       for _, title in ipairs(titles) do
         if (entry.title == title) then
           do
@@ -122,10 +119,6 @@ function _insert_new_entries(parsed_feed)
           end
         end
       end
-
-      -- Discard all whose updated time is less than that in db
-    elseif (last_updated >= tonumber(entry.updated_parsed)) then
-      exists = true
     end
 
     if (not exists) then
@@ -181,6 +174,10 @@ function DB.read_feed(feed_link)
   db:close()
 
   return feed_info, entries
+end
+
+function DB.close_if_open()
+  if (db:isopen()) then db:close() end
 end
 
 return DB

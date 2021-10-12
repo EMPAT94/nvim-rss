@@ -20,17 +20,57 @@ Ideally, if you have a bunch of feeds and wish to simply view them in neovim ins
 4. [feed-parser](https://github.com/slact/lua-feedparser) | `luarocks install feedparser`
 5. [sqlite.lua](https://github.com/tami5/sqlite.lua) | `luarocks install sqlite`
 
-## Installing (for build testing, not as a plugin yet!)
+## Installation
 
-1. Clone repository
-2. luarocks install feedparser and sqlite
-3. cd nvim-rss
-4. open nvim
-5. :source plugin/nvim-rss
-6. :OpenRssView
-7. Insert a valid rss link eg http://feeds.bbci.co.uk/news/rss.xml
-8. Put cursor on the link and call :FetchFeed
-9. Enjoy!
+__Tested on linux, may work on macos. Probably won't work on windows.__
+
+If `vim-plug` then
+
+```vim
+Plug 'empat94/nvim-rss'
+```
+
+Else your usual way of installing plugins
+
+## Setup
+
+Inside init.lua
+
+```lua
+-- default values
+require("nvim-rss").setup({
+  feeds_dir = "~", -- ensure has write permissions
+  verbose = false -- shows more output in messages and entries
+})
+```
+
+If using init.vim, wrap the code inside `lua << EOF ... EOF`
+
+## Usage
+
+__By default, no mappings/commands present. All functions are exposed so you may use them as you like!__
+
+* Open RSS File: `open_feeds_tab()`
+
+Opens nvim.rss file where all the feeds are listed. By default `~/nvim.rss`, see [Setup](#Setup) to change default dir.
+
+* Refresh a Feed: `fetch_feed()`
+
+Pulls data from server for the feed under cursor, updates database and opens a vertical split to show the entries.
+
+---
+
+To use above functions, write the usual mapping or command syntax. Example -
+
+```vim
+command! OpenRssView lua require("nvim-rss").open_feeds_tab()
+command! FetchFeed lua require("nvim-rss").fetch_feed()
+```
+
+```vim
+:OpenRssView
+:FetchFeed
+```
 
 ## Roadmap
 
@@ -48,13 +88,19 @@ v0.2
 - [ ] OPML import/export
 - [ ] Unread feed highlight
 - [ ] Total and unread entries count
-- [ ] Refreash all feeds function
+- [ ] Refresh all feeds
+- [ ] Make db calls async
+- [ ] Solve db locked error
 
-> v0.3 (Tentative)
+v0.3 and above (Tentative)
 
-- [ ] Mark favorite entries
+- [ ] Mark favorite feeds, star entries
+- [ ] Use <Plug> to expose functions
 - [ ] Console browser intergation
-- [ ] Most viewed, most recent feeds view
+- [ ] Most viewed, most recent, favorite feeds view
+- [ ] Highlight entries (new, read, starred)
+- [ ] Add testing framework
+- [ ] Windows support
 
 ## Personal Goals
 
