@@ -12,15 +12,13 @@ Ideally, if you have a bunch of feeds and wish to simply view them in neovim ins
 
 ![nvim-rss-sample-photo](./nvim-rss-sample-photo.png)
 
-## Pre-requisites
+## Pre-requisites (installation cmd for yay)
 
-TODO: Add links, versions and descriptions
-
-1. neovim
-2. curl
-3. sqlite3
-4. feed-parser (from luarocks) (depends on expat)
-5. sqlite.lua (from luarocks) (depends on luv)
+1. [neovim](https://neovim.io/) | `yay -S neovim`
+2. [curl](https://curl.se/) | `yay -S curl` | Usually pre-installed on most systems
+3. [sqlite3](https://sqlite.org/index.html) | `yay -S sqlite3` | Usually pre-installed on some systems
+4. [feed-parser](https://github.com/slact/lua-feedparser) | `luarocks install feedparser`
+5. [sqlite.lua](https://github.com/tami5/sqlite.lua) | `luarocks install sqlite`
 
 ## Installing (for build testing, not as a plugin yet!)
 
@@ -34,16 +32,29 @@ TODO: Add links, versions and descriptions
 8. Put cursor on the link and call :FetchFeed
 9. Enjoy!
 
-## Current Progress and Todos
+## Roadmap
 
-v0.1 Aim : Simple RSS fetching and viewing
+v0.1
+
 - [x] Fetch & parse feeds
 - [x] Setup a database
 - [x] Update UI for new feed data
-- [ ] Clean up Rssview for better reading
-- [ ] Check multiple streams for different data structures
-- [ ] Add user interaction to RSS View
+- [x] Clean up Rssview for better reading
+- [x] Check multiple streams for different data structures
 - [ ] Release v0.1 (Deadline : 13th Oct 2021)
+
+v0.2
+
+- [ ] OPML import/export
+- [ ] Unread feed highlight
+- [ ] Total and unread entries count
+- [ ] Refreash all feeds function
+
+> v0.3 (Tentative)
+
+- [ ] Mark favorite entries
+- [ ] Console browser intergation
+- [ ] Most viewed, most recent feeds view
 
 ## Personal Goals
 
