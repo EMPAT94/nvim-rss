@@ -11,7 +11,7 @@ Ideally, if you have a bunch of feeds and wish to simply view them in neovim ins
 
 ## Showcase
 
-![nvim-rss-sample](./nvim-rss-v0.1.mp4)
+https://user-images.githubusercontent.com/9110181/137142768-11a1c89a-1434-4608-81f0-4f27edfdb0a7.mp4
 
 ## Pre-requisites (installation cmd for yay on arch-like systems)
 
