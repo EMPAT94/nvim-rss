@@ -1,6 +1,7 @@
-# nvim-rss
-
-A simple rss reader for neovim written in lua.
+<br />
+<h1 style="text-align:center;">NVIM-RSS v0.1</h1>
+<p style="text-align:center;">A simple rss reader for neovim written in lua.</p>
+<br />
 
 ## Project Goals
 
@@ -8,11 +9,11 @@ I aim for it to be similar to the excellent [vnews](https://github.com/danchoi/v
 
 Ideally, if you have a bunch of feeds and wish to simply view them in neovim instead of browsers or dedicated apps, then this plugin should help you out.
 
-## Show-case of experimental version
+## Showcase
 
-![nvim-rss-sample-photo](./nvim-rss-sample-photo.png)
+![nvim-rss-sample](./nvim-rss-v0.1.mp4)
 
-## Pre-requisites (installation cmd for yay)
+## Pre-requisites (installation cmd for yay on arch-like systems)
 
 1. [neovim](https://neovim.io/) | `yay -S neovim`
 2. [curl](https://curl.se/) | `yay -S curl` | Usually pre-installed on most systems
@@ -34,13 +35,17 @@ Else your usual way of installing plugins
 
 ## Setup
 
+__Only when default values need to be changed__
+
 Inside init.lua
 
 ```lua
--- default values
+-- for simple init (this generates a db file if it doesn't already exists)
+require("nvim-rss")
+
+-- to change options (shown with default values)
 require("nvim-rss").setup({
   feeds_dir = "~", -- ensure has write permissions
-  verbose = false -- shows more output in messages and entries
 })
 ```
 
@@ -76,26 +81,26 @@ command! FetchFeed lua require("nvim-rss").fetch_feed()
 
 v0.1
 
-- [x] Fetch & parse feeds
-- [x] Setup a database
-- [x] Update UI for new feed data
-- [x] Clean up Rssview for better reading
-- [x] Check multiple streams for different data structures
+- [X] Fetch & parse feeds
+- [X] Setup a database
+- [X] Update UI for new feed data
+- [X] Clean up Rssview for better reading
+- [X] Check multiple streams for different data structures
 - [ ] Release v0.1 (Deadline : 13th Oct 2021)
 
 v0.2
 
 - [ ] OPML import/export
 - [ ] Unread feed highlight
-- [ ] Total and unread entries count
 - [ ] Refresh all feeds
 - [ ] Make db calls async
-- [ ] Solve db locked error
+- [ ] Add verbose flag
 
 v0.3 and above (Tentative)
 
 - [ ] Mark favorite feeds, star entries
-- [ ] Use <Plug> to expose functions
+- [ ] Total and unread entries count
+- [ ] Use <Plug> to expose functions 
 - [ ] Console browser intergation
 - [ ] Most viewed, most recent, favorite feeds view
 - [ ] Highlight entries (new, read, starred)
