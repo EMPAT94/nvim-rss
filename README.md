@@ -77,6 +77,8 @@ command! FetchFeed lua require("nvim-rss").fetch_feed()
 :FetchFeed
 ```
 
+_Checkout my feeds list [here](https://github.com/EMPAT94/dotfiles/blob/main/nvim/.config/nvim/nvim.rss)_
+
 ## Roadmap
 
 v0.1
@@ -86,7 +88,7 @@ v0.1
 - [X] Update UI for new feed data
 - [X] Clean up Rssview for better reading
 - [X] Check multiple streams for different data structures
-- [ ] Release v0.1 (Deadline : 13th Oct 2021)
+- [X] Release v0.1 (Deadline : 13th Oct 2021)
 
 v0.2
 
