@@ -35,8 +35,6 @@ Else your usual way of installing plugins
 
 ## Setup
 
-__Only when default values need to be changed__
-
 Inside init.lua
 
 ```lua
@@ -93,16 +91,16 @@ v0.1
 v0.2
 
 - [ ] OPML import/export
-- [ ] Unread feed highlight
+- [ ] Unread entries feed count & highlight
 - [ ] Refresh all feeds
 - [ ] Make db calls async
 - [ ] Add verbose flag
+- [ ] Release v0.2 (Deadline : 7th Nov 2021)
 
 v0.3 and above (Tentative)
 
 - [ ] Mark favorite feeds, star entries
-- [ ] Total and unread entries count
-- [ ] Use <Plug> to expose functions 
+- [ ] Use <Plug> to expose functions
 - [ ] Console browser intergation
 - [ ] Most viewed, most recent, favorite feeds view
 - [ ] Highlight entries (new, read, starred)
