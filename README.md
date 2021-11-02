@@ -38,12 +38,8 @@ Else your usual way of installing plugins
 Inside init.lua
 
 ```lua
--- for simple init (this generates a db file if it doesn't already exists)
-require("nvim-rss")
-
--- to change options (shown with default values)
 require("nvim-rss").setup({
-  feeds_dir = "~", -- ensure has write permissions
+  feeds_dir = "/home/user/.config/nvim", -- defaults to home dir, ensure has write permissions
 })
 ```
 
@@ -61,19 +57,35 @@ Opens nvim.rss file where all the feeds are listed. By default `~/nvim.rss`, see
 
 Pulls data from server for the feed under cursor, updates database and opens a vertical split to show the entries.
 
+* Import OPML file: `import_opml(opml_file)`
+
+Parses the supplied file, extracts feed links if they exist and dumps them under "OPML Import" inside nvim.rss. They are not added to database unless you explicitly fetch feeds for the links!
+
 ---
 
 To use above functions, write the usual mapping or command syntax. Example -
 
 ```vim
+
 command! OpenRssView lua require("nvim-rss").open_feeds_tab()
+
 command! FetchFeed lua require("nvim-rss").fetch_feed()
+
+command! -nargs=1 ImportOpml lua require("nvim-rss").import_opml(<args>)
+
 ```
 
 ```vim
+
 :OpenRssView
+
 :FetchFeed
+
+:ImportOpml "/home/user/Documents/rss-file.opml"
+
 ```
+
+NOTE: The command ImportOpml requires a full path and surrounding quotes.
 
 _Checkout my feeds list [here](https://github.com/EMPAT94/dotfiles/blob/main/nvim/.config/nvim/nvim.rss)_
 
