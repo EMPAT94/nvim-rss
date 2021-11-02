@@ -1,6 +1,6 @@
 <br />
-<h1 style="text-align:center;">NVIM-RSS v0.1</h1>
-<p style="text-align:center;">A simple rss reader for neovim written in lua.</p>
+<h1 align="center">NVIM-RSS v0.1</h1>
+<p align="center">A simple rss reader for neovim written in lua.</p>
 <br />
 
 ## Project Goals
@@ -90,11 +90,9 @@ v0.1
 
 v0.2
 
-- [ ] OPML import/export
+- [X] OPML import
 - [ ] Unread entries feed count & highlight
 - [ ] Refresh all feeds
-- [ ] Make db calls async
-- [ ] Add verbose flag
 - [ ] Release v0.2 (Deadline : 7th Nov 2021)
 
 v0.3 and above (Tentative)
@@ -105,6 +103,7 @@ v0.3 and above (Tentative)
 - [ ] Most viewed, most recent, favorite feeds view
 - [ ] Highlight entries (new, read, starred)
 - [ ] Add testing framework
+- [ ] OPML export
 - [ ] Windows support
 
 ## Personal Goals
