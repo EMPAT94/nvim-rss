@@ -3,7 +3,7 @@ function _G.prints(...)
   local objects = {}
   for i = 1, select("#", ...) do
     local v = select(i, ...)
-    table.insert(objects, vim.inspect(v))
+    objects[#objects+1] = vim.inspect(v)
   end
 
   print(table.concat(objects, "\n"))
@@ -11,7 +11,10 @@ end
 
 -- TODO rockspec ? Check how to install module as dependency
 local feedparser = require("feedparser")
+
 local db = require("nvim-rss.modules.db")
+local utils = require("nvim-rss.modules.utils")
+local buffer = require("nvim-rss.modules.buffer")
 
 -- TODO Split code into proper functions and modules
 -- TODO Move to constants.lua maybe ?
@@ -22,69 +25,13 @@ local new_pipe = vim.loop.new_pipe
 local wrap = vim.schedule_wrap
 local curl = "curl"
 
-local options = {
-  feeds_dir = "~",
-  verbose = false,
-}
+local options = {}
+local feeds_file
+local feeds_db
 
-local feeds_file = "nvim.rss"
-
-local function handle_error(err, str)
+function handle_error(err)
   db.close_if_open()
-  error(err, str)
-end
-
-local function sanitize(text)
-  if (not text) then return end
-  local str = tostring(text):gsub("<.->", "") -- Remove markup
-  local t = {}
-  for s in string.gmatch(str, "([^\n]+)") do table.insert(t, s) end
-  return t
-end
-
-local function is_url(str)
-  local starts_with_http = str:sub(1, 4) == "http"
-  local has_no_spaces = not str:match("%s")
-  return starts_with_http and has_no_spaces
-end
-
-local function _insert_entries_into_buffer(entries)
-  for i, entry in ipairs(entries) do
-    vim.fn.append(vim.fn.line("$"), "")
-    vim.fn.append(vim.fn.line("$"), "")
-    vim.fn.append(vim.fn.line("$"), entry.title)
-    vim.fn.append(vim.fn.line("$"), "------------------------")
-    vim.fn.append(vim.fn.line("$"), entry.link)
-    vim.fn.append(vim.fn.line("$"), "")
-    if (entry.summary) then vim.fn.append(vim.fn.line("$"), sanitize(entry.summary)) end
-  end
-  cmd("0")
-end
-
-local function _insert_feed_info_into_buffer(feed_info)
-  cmd("normal o " .. feed_info.title)
-  cmd("center")
-  cmd("normal o")
-  cmd("normal o " .. feed_info.htmlUrl)
-  cmd("center")
-  cmd("normal o")
-  if (feed_info.subtitle) then
-    cmd("normal o " .. feed_info.subtitle)
-    cmd("center")
-  end
-  cmd("normal o")
-
-  if (options.verbose) then
-    cmd("normal o VERSION : " .. feed_info.version)
-    cmd("normal o FORMAT : " .. feed_info.format)
-    cmd("normal o UPDATED : " .. feed_info.updated)
-    cmd("normal o RIGHTS : " .. feed_info.rights)
-    cmd("normal o GENERATOR : " .. feed_info.generator)
-    cmd("normal o AUTHOR : " .. feed_info.author)
-  end
-
-  cmd("normal o ========================================")
-  cmd("center")
+  error(err)
 end
 
 local function open_entries_split(parsed_feed)
@@ -106,9 +53,9 @@ local function open_entries_split(parsed_feed)
     endif
   ]])
 
-  _insert_feed_info_into_buffer(feed_info)
+  buffer.insert_feed_info(feed_info)
 
-  _insert_entries_into_buffer(entries)
+  buffer.insert_entries(entries)
 end
 
 local function parse_data(raw_feed, xmlUrl)
@@ -124,14 +71,14 @@ local M = {}
 
 -- Open rss view in new tab
 function M.open_feeds_tab()
-  cmd("tabnew " .. options.feeds_dir .. "/" .. feeds_file)
+  cmd("tabnew " .. feeds_file)
 end
 
 -- Refresh content for feed under cursor
 function M.fetch_feed()
   local xmlUrl = api.nvim_get_current_line()
 
-  if (not is_url(xmlUrl)) then handle_error("Line under cursor not a valid url") end
+  if (not utils.is_url(xmlUrl)) then handle_error("Line under cursor not a valid url") end
 
   print("Fetching feed " .. xmlUrl .. "... ")
 
@@ -144,9 +91,11 @@ function M.fetch_feed()
     args = { "-L", "--user-agent", "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/90.0", xmlUrl },
     stdio = { stdin, stdout, stderr },
   }, wrap(function(err, msg)
+
     stdin:shutdown()
     stdout:read_stop()
     stderr:read_stop()
+
     stdin:close()
     stdout:close()
     stderr:close()
@@ -168,8 +117,43 @@ function M.fetch_feed()
   end))
 end
 
+function M.import_opml(opml_file)
+  print("Importing ", opml_file, "...")
+
+  -- Read all feeds from file
+  local feeds = {}
+  for line in io.lines(opml_file) do
+    local type = line:match("type=\"(.-)\"")
+    local link = line:match("xmlUrl=\"(.-)\"")
+    local title = line:match("title=\"(.-)\"")
+    if not title then title = line:match("text=\"(.-)\"") end
+
+    if type and title and link then
+      feeds[#feeds + 1] = link
+    end
+  end
+
+  -- Dump 'em into nvim.rss
+  local nvim_rss, err = io.open(feeds_file, "a+")
+  if err then handle_error(err) end
+  nvim_rss:write("\n\nOPML IMPORT\n-----\n")
+  nvim_rss:write(table.concat(feeds, "\n"))
+  nvim_rss:flush()
+  nvim_rss:close()
+
+  -- Update db as well
+end
+
 function M.setup(user_options)
-  for k, v in pairs(user_options) do options[k] = v end
+  -- setup options
+  options.feeds_dir = user_options.feeds_dir or "~"
+  options.verbose = user_options.verbose or false
+
+  feeds_file = options.feeds_dir .. "/nvim.rss"
+  feeds_db = options.feeds_dir .. "/nvim.rss.db"
+
+  -- setup database
+  db.create(feeds_db)
 end
 
 return M

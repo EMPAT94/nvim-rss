@@ -14,20 +14,13 @@ local feed_schema = {
     "text",
     required = true,
   },
-  subtitle = {
-    "text",
-  },
-  version = { -- is "atom10" or "rss20" etc
-    "text",
-  },
   format = { -- is "atom" or "rss"
     "text",
     required = true,
   },
-  htmlUrl = { -- site url
-    "text",
-    required = true,
-  },
+  subtitle = "text",
+  version = "text",
+  htmlUrl = "text",
   rights = "text",
   generator = "text",
   author = "text",
@@ -45,31 +38,17 @@ local entry_schema = {
     "text",
     required = true,
   },
-  summary = { -- aka content, description et al
-    "text",
-  },
+  summary = "text",
+  updated = "text",
+  updated_parsed = "number",
   feed = {
     type = "text",
     required = true,
     reference = "feeds.link",
   },
-  updated = "text",
-  updated_parsed = "number",
-
-  -- nvim.rss keys
-  seen = {
-    "integer", -- timestamp (s) when opened
-    required = true,
-  },
 }
 
-local feeds_db = "nvim.rss.db"
-
-local db = sqlite {
-  uri = feeds_db,
-  [feed_table] = feed_schema,
-  [entry_table] = entry_schema,
-}
+local db;
 
 local function _upsert_feed(feed)
 
@@ -91,8 +70,8 @@ local function _insert_new_entries(parsed_feed)
   local updated = {}
   local titles = {}
   for _, e in ipairs(entries) do
-    table.insert(updated, e.updated_parsed)
-    table.insert(titles, e.title)
+    updated[#updated + 1] = e.updated_parsed
+    titles[#titles + 1] = e.title
   end
 
   local last_updated = 0
@@ -122,20 +101,27 @@ local function _insert_new_entries(parsed_feed)
     end
 
     if (not exists) then
-      table.insert(entries, {
+      entries[#entries + 1] = {
         link = entry.link,
         title = entry.title,
         summary = entry.summary,
         updated = entry.udated,
         updated_parsed = tonumber(entry.updated_parsed),
         feed = parsed_feed.xmlUrl,
-        seen = 0,
-      })
+      }
     end
   end
 
   if (#entries > 0) then local e, m = db:tbl(entry_table):insert(entries) end
 
+end
+
+function DB.create(feeds_db)
+  db = sqlite {
+    uri = feeds_db,
+    [feed_table] = feed_schema,
+    [entry_table] = entry_schema,
+  }
 end
 
 function DB.update_feed(parsed_feed)
