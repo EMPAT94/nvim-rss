@@ -49,13 +49,17 @@ If using init.vim, wrap the code inside `lua << EOF ... EOF`
 
 __By default, no mappings/commands present. All functions are exposed so you may use them as you like!__
 
-* Open RSS File: `open_feeds_tab()`
+* Open RSS file: `open_feeds_tab()`
 
 Opens nvim.rss file where all the feeds are listed. By default `~/nvim.rss`, see [Setup](#Setup) to change default dir.
 
-* Refresh a Feed: `fetch_feed()`
+* Fetch and view a feed: `fetch_feed()`
 
-Pulls data from server for the feed under cursor, updates database and opens a vertical split to show the entries.
+Pulls updates for the feed under cursor and opens a vertical split to show the entries.
+
+* Fetch all feed: `fetch_all_feeds()`
+
+Fetches data for all feeds in nvim.rss and updates the corresponding counts if nvim.rss is loaded in a buffer.
 
 * Import OPML file: `import_opml(opml_file)`
 
@@ -71,6 +75,8 @@ command! OpenRssView lua require("nvim-rss").open_feeds_tab()
 
 command! FetchFeed lua require("nvim-rss").fetch_feed()
 
+command! FetchAllFeeds lua require("nvim-rss").fetch_all_feed()
+
 command! -nargs=1 ImportOpml lua require("nvim-rss").import_opml(<args>)
 
 ```
@@ -80,6 +86,8 @@ command! -nargs=1 ImportOpml lua require("nvim-rss").import_opml(<args>)
 :OpenRssView
 
 :FetchFeed
+
+:FetchAllFeeds
 
 :ImportOpml "/home/user/Documents/rss-file.opml"
 
@@ -103,8 +111,9 @@ v0.1
 v0.2
 
 - [X] OPML import
-- [ ] Unread entries feed count & highlight
-- [ ] Refresh all feeds
+- [X] Latest entries feed count
+- [X] Refresh all feeds
+- [ ] View feed (without fetching data from server)
 - [ ] Release v0.2 (Deadline : 7th Nov 2021)
 
 v0.3 and above (Tentative)
