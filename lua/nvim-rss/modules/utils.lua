@@ -8,10 +8,9 @@ function UTILS.sanitize(text)
   return t
 end
 
-function UTILS.is_url(str)
-  local starts_with_http = str:sub(1, 4) == "http"
-  local has_no_spaces = not str:match("%s")
-  return starts_with_http and has_no_spaces
+function UTILS.get_url(str)
+  local url = str:match("https?://%S*")
+  return url
 end
 
 return UTILS

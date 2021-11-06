@@ -21,6 +21,14 @@ function BUFFER.insert_entries(entries)
   cmd("0")
 end
 
+function BUFFER.update_feed_line(xmlUrl, latest, total)
+  cmd([[ let win = bufwinnr("nvim.rss")]])
+  cmd("/" .. xmlUrl:gsub("/", "\\/"))
+  cmd("normal 0I ")
+  cmd("normal 0dth")
+  cmd("normal I[" .. latest .. "/" .. total .. "] ")
+end
+
 function BUFFER.insert_feed_info(feed_info)
   cmd("normal o " .. feed_info.title)
   cmd("center")

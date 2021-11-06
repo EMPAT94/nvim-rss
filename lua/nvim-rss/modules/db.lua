@@ -46,6 +46,8 @@ local entry_schema = {
     required = true,
     reference = "feeds.link",
   },
+
+  fetched = "number", -- timestamp of when feed was fetched
 }
 
 local db;
@@ -108,6 +110,7 @@ local function _insert_new_entries(parsed_feed)
         updated = entry.udated,
         updated_parsed = tonumber(entry.updated_parsed),
         feed = parsed_feed.xmlUrl,
+        fetched = os.time(),
       }
     end
   end
@@ -160,6 +163,36 @@ function DB.read_feed(feed_link)
   db:close()
 
   return feed_info, entries
+end
+
+function DB.read_entry_stats(feed_link)
+  if (db:isclose()) then db:open() end
+
+  local entries = db:tbl(entry_table):get({
+    where = {
+      feed = feed_link,
+    },
+  })
+
+  -- Find the count of latest fetched entries
+  local fetched = {}
+  for _, e in ipairs(entries) do fetched[#fetched + 1] = e.fetched end
+
+  local latest_fetched = 0
+  if (next(fetched) ~= nil) then
+    table.sort(fetched)
+    latest_fetched = fetched[1]
+  end
+  local latest = 0
+  local total = 0
+  for _, e in ipairs(entries) do
+    if (e.fetched == latest_fetched) then latest = latest + 1 end
+    total = total + 1
+  end
+
+  db:close()
+
+  return latest, total
 end
 
 function DB.close_if_open()

@@ -13,8 +13,8 @@ endfun
 nnoremap <C-e> :call ReloadPlugin()<CR>
 
 command! FetchFeed lua require("nvim-rss").fetch_feed()
+command! FetchAllFeeds lua require("nvim-rss").fetch_all_feeds()
 command! OpenRssView lua require("nvim-rss").open_feeds_tab()
-
 " Must use full path
 command! -nargs=1 ImportOpml lua require("nvim-rss").import_opml(<args>)
 
