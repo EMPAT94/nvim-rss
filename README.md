@@ -61,6 +61,10 @@ Pulls updates for the feed under cursor and opens a vertical split to show the e
 
 Fetches data for all feeds in nvim.rss and updates the corresponding counts if nvim.rss is loaded in a buffer.
 
+* View a feed: `view_feed()`
+
+Opens entries for feed under cursor in a vertical split. This does not refreshes data from server, instead pulling stored content from database.
+
 * Import OPML file: `import_opml(opml_file)`
 
 Parses the supplied file, extracts feed links if they exist and dumps them under "OPML Import" inside nvim.rss. They are not added to database unless you explicitly fetch feeds for the links!
@@ -77,6 +81,8 @@ command! FetchFeed lua require("nvim-rss").fetch_feed()
 
 command! FetchAllFeeds lua require("nvim-rss").fetch_all_feeds()
 
+command! ViewFeed lua require("nvim-rss").view_feed()
+
 command! -nargs=1 ImportOpml lua require("nvim-rss").import_opml(<args>)
 
 ```
@@ -88,6 +94,8 @@ command! -nargs=1 ImportOpml lua require("nvim-rss").import_opml(<args>)
 :FetchFeed
 
 :FetchAllFeeds
+
+:ViewFeed
 
 :ImportOpml "/home/user/Documents/rss-file.opml"
 
@@ -113,7 +121,7 @@ v0.2
 - [X] OPML import
 - [X] Latest entries feed count
 - [X] Refresh all feeds
-- [ ] View feed (without fetching data from server)
+- [X] View feed (without fetching data from server)
 - [ ] Release v0.2 (Deadline : 7th Nov 2021)
 
 v0.3
