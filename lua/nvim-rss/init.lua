@@ -105,8 +105,16 @@ end
 -- Refresh content for feed under cursor
 function M.fetch_feed()
   local xmlUrl = utils.get_url(api.nvim_get_current_line())
+
   if (not xmlUrl) then error("Invalid url") end
-  web_request(xmlUrl, open_entries_split)
+
+  local function callback(parsed_feed)
+    local latest, total = db.read_entry_stats(parsed_feed.xmlUrl)
+    buffer.update_feed_line(parsed_feed.xmlUrl, latest, total)
+    open_entries_split(parsed_feed)
+  end
+
+  web_request(xmlUrl, callback)
 end
 
 function update_feed_line(parsed_feed)
@@ -143,6 +151,14 @@ function M.import_opml(opml_file)
   nvim_rss:write(table.concat(feeds, "\n"))
   nvim_rss:flush()
   nvim_rss:close()
+end
+
+function M.view_feed(feed_url)
+  local url = utils.get_url(vim.api.nvim_get_current_line())
+  if (not url) then error("Invalid url") end
+  open_entries_split({
+    xmlUrl = url,
+  })
 end
 
 function M.setup(user_options)

@@ -116,15 +116,18 @@ v0.2
 - [ ] View feed (without fetching data from server)
 - [ ] Release v0.2 (Deadline : 7th Nov 2021)
 
-v0.3 and above (Tentative)
+v0.3
 
+- [ ] Reset everything
 - [ ] Mark favorite feeds, star entries
+- [ ] OPML export
+
+v0.4 and above (Tentative)
+
 - [ ] Use <Plug> to expose functions
 - [ ] Console browser intergation
 - [ ] Most viewed, most recent, favorite feeds view
 - [ ] Highlight entries (new, read, starred)
-- [ ] Add testing framework
-- [ ] OPML export
 - [ ] Windows support
 
 ## Personal Goals

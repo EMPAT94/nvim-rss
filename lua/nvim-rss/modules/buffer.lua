@@ -24,6 +24,7 @@ end
 function BUFFER.update_feed_line(xmlUrl, latest, total)
   cmd([[ let win = bufwinnr("nvim.rss")]])
   cmd("/" .. xmlUrl:gsub("/", "\\/"))
+  cmd("nohlsearch")
   cmd("normal 0I ")
   cmd("normal 0dth")
   cmd("normal I[" .. latest .. "/" .. total .. "] ")
