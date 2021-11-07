@@ -1,5 +1,5 @@
 <br />
-<h1 align="center">NVIM-RSS v0.1</h1>
+<h1 align="center">NVIM-RSS</h1>
 <p align="center">A simple rss reader for neovim written in lua.</p>
 <br />
 
