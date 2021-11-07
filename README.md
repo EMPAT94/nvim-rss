@@ -122,7 +122,7 @@ v0.2
 - [X] Latest entries feed count
 - [X] Refresh all feeds
 - [X] View feed (without fetching data from server)
-- [ ] Release v0.2 (Deadline : 7th Nov 2021)
+- [X] Release v0.2 (Deadline : 7th Nov 2021)
 
 v0.3
 
