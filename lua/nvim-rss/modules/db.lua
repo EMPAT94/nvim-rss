@@ -1,7 +1,6 @@
 local DB = {}
 
 local sqlite = require("sqlite")
-local sqlite_tbl = require("sqlite.tbl")
 
 local feed_table = "feeds"
 local feed_schema = {
@@ -82,7 +81,7 @@ local function _insert_new_entries(parsed_feed)
     last_updated = updated[#updated]
   end
 
-  local entries = {}
+  local new_entries = {}
   for _, entry in ipairs(parsed_feed.entries) do
     -- Check whether entry exists in db or not
     local exists = false
@@ -103,7 +102,7 @@ local function _insert_new_entries(parsed_feed)
     end
 
     if (not exists) then
-      entries[#entries + 1] = {
+      new_entries[#new_entries + 1] = {
         link = entry.link,
         title = entry.title,
         summary = entry.summary,
@@ -115,7 +114,7 @@ local function _insert_new_entries(parsed_feed)
     end
   end
 
-  if (#entries > 0) then local e, m = db:tbl(entry_table):insert(entries) end
+  if (#new_entries > 0) then local e, m = db:tbl(entry_table):insert(new_entries) end
 
 end
 
@@ -181,8 +180,9 @@ function DB.read_entry_stats(feed_link)
   local latest_fetched = 0
   if (next(fetched) ~= nil) then
     table.sort(fetched)
-    latest_fetched = fetched[1]
+    latest_fetched = fetched[#fetched]
   end
+
   local latest = 0
   local total = 0
   for _, e in ipairs(entries) do

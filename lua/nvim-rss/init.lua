@@ -141,7 +141,7 @@ function M.import_opml(opml_file)
     local title = line:match("title=\"(.-)\"")
     if not title then title = line:match("text=\"(.-)\"") end
 
-    if type and title and link then feeds[#feeds + 1] = link end
+    if type and title and link then feeds[#feeds + 1] = link .. " " .. title end
   end
 
   -- Dump 'em into nvim.rss
