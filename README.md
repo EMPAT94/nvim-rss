@@ -7,11 +7,11 @@
 
 I aim for it to be similar to the excellent [vnews](https://github.com/danchoi/vnews) and, if you squint hard enough while looking sideways, then perhaps [elfeed](https://github.com/skeeto/elfeed).
 
-Ideally, if you have a bunch of feeds and wish to simply view them in neovim instead of browsers or dedicated apps, then this plugin should help you out.
+Ideally, if you have a bunch of feeds and simply wish to view the latest entries in neovim instead of browsers or dedicated apps, then this plugin should help you out.
 
-## Showcase
+## Showcase (v0.2)
 
-https://user-images.githubusercontent.com/9110181/137142768-11a1c89a-1434-4608-81f0-4f27edfdb0a7.mp4
+https://user-images.githubusercontent.com/9110181/141071168-ce671cd5-3f9b-4b68-b0d0-bb76abb7a8c5.mp4
 
 ## Pre-requisites (installation cmd for yay on arch-like systems)
 
@@ -39,7 +39,7 @@ Inside init.lua
 
 ```lua
 require("nvim-rss").setup({
-  feeds_dir = "/home/user/.config/nvim", -- defaults to home dir, ensure has write permissions
+  feeds_dir = "/home/user/.config/nvim", -- ensure has write permissions
 })
 ```
 
