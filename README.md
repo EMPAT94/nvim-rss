@@ -114,7 +114,7 @@ v0.1
 - [X] Update UI for new feed data
 - [X] Clean up Rssview for better reading
 - [X] Check multiple streams for different data structures
-- [X] Release v0.1 (Deadline : 13th Oct 2021)
+- [X] Release v0.1 (Deadline: 13th Oct 2021)
 
 v0.2
 
@@ -122,13 +122,16 @@ v0.2
 - [X] Latest entries feed count
 - [X] Refresh all feeds
 - [X] View feed (without fetching data from server)
-- [X] Release v0.2 (Deadline : 7th Nov 2021)
+- [X] Release v0.2 (Deadline: 7th Nov 2021)
 
 v0.3
 
-- [ ] Reset everything
+- [ ] Clean database, reset everything
 - [ ] Mark favorite feeds, star entries
+- [ ] Fetch inside category
+- [ ] Fetch inside visual range (selected lines)
 - [ ] OPML export
+- [ ] Release v0.3 (Deadline: 3rd Dec 2021)
 
 v0.4 and above (Tentative)
 
