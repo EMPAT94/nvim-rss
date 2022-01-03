@@ -13,11 +13,11 @@ Ideally, if you have a bunch of feeds and simply wish to view the latest entries
 
 https://user-images.githubusercontent.com/9110181/141071168-ce671cd5-3f9b-4b68-b0d0-bb76abb7a8c5.mp4
 
-## Pre-requisites (installation cmd for yay on arch-like systems)
+## Pre-requisites
 
-1. [neovim](https://neovim.io/) | `yay -S neovim`
-2. [curl](https://curl.se/) | `yay -S curl` | Usually pre-installed on most systems
-3. [sqlite3](https://sqlite.org/index.html) | `yay -S sqlite3` | Usually pre-installed on some systems
+1. [neovim](https://neovim.io/)
+2. [curl](https://curl.se/) | Usually pre-installed on most systems
+3. [sqlite3](https://sqlite.org/index.html) | Usually pre-installed on some systems
 4. [feed-parser](https://github.com/slact/lua-feedparser) | `luarocks install feedparser`
 5. [sqlite.lua](https://github.com/tami5/sqlite.lua) | `luarocks install sqlite`
 
@@ -130,11 +130,11 @@ v0.3
 - [ ] Mark favorite feeds, star entries
 - [ ] Fetch inside category
 - [ ] Fetch inside visual range (selected lines)
-- [ ] OPML export
-- [ ] Release v0.3 (Deadline: 3rd Dec 2021)
+- [ ] Release v0.3 (Deadline: ~3rd Dec 2021~ 7th Jan 2022)
 
 v0.4 and above (Tentative)
 
+- [ ] OPML export
 - [ ] Use <Plug> to expose functions
 - [ ] Console browser intergation
 - [ ] Most viewed, most recent, favorite feeds view
