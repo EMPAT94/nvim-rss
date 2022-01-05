@@ -1,23 +1,9 @@
--- TODO For dev, remove later
-function _G.prints(...)
-  local objects = {}
-  for i = 1, select("#", ...) do
-    local v = select(i, ...)
-    objects[#objects + 1] = vim.inspect(v)
-  end
-
-  print(table.concat(objects, "\n"))
-end
-
--- TODO rockspec ? Check how to install module as dependency
 local feedparser = require("feedparser")
 
 local db = require("nvim-rss.modules.db")
 local utils = require("nvim-rss.modules.utils")
 local buffer = require("nvim-rss.modules.buffer")
 
--- TODO Split code into proper functions and modules
--- TODO Move to constants.lua maybe ?
 local cmd = vim.cmd
 local api = vim.api
 local spawn = vim.loop.spawn
@@ -31,26 +17,14 @@ local feeds_db
 
 local function open_entries_split(parsed_feed)
   local feed_info, entries = db.read_feed(parsed_feed.xmlUrl)
-
-  cmd([[
-    let win = bufwinnr("__FEED__")
-
-    if win == -1
-      vsplit __FEED__
-      setlocal buftype=nofile
-      setlocal nobackup noswapfile nowritebackup
-      setlocal noautoindent nosmartindent
-      setlocal nonumber norelativenumber
-      setlocal filetype=markdown
-    else
-      exe win . "wincmd w"
-      normal! ggdG
-    endif
-  ]])
-
+  buffer.create_feed_buffer()
   buffer.insert_feed_info(feed_info)
-
   buffer.insert_entries(entries)
+end
+
+local function update_feed_line(parsed_feed)
+  local latest, total = db.read_entry_stats(parsed_feed.xmlUrl)
+  buffer.update_feed_line(parsed_feed.xmlUrl, latest, total)
 end
 
 local M = {}
@@ -80,25 +54,39 @@ local function web_request(url, callback)
     stdout:close()
     stderr:close()
 
-    if (not handle:is_closing()) then handle:close() end
+    if (not handle:is_closing()) then
+      handle:close()
+    end
 
-    if (err ~= 0) then error("Web request error", err .. msg) end
+    if (err ~= 0) then
+      error("Web request error", err .. msg)
+    end
 
     local parsed_feed = feedparser.parse(raw_feed)
-    if (not parsed_feed) then error("Feed parsing error", raw_feed) end
+    if (not parsed_feed) then
+      error("Feed parsing error", raw_feed)
+    end
+
     raw_feed = ""
     parsed_feed.xmlUrl = url
     db.update_feed(parsed_feed)
+
     callback(parsed_feed)
   end))
 
   stdout:read_start(wrap(function(err, chunk)
-    if (err) then error(err, chunk) end
-    if (chunk) then raw_feed = raw_feed .. chunk end
+    if (err) then
+      error(err, chunk)
+    end
+    if (chunk) then
+      raw_feed = raw_feed .. chunk
+    end
   end))
 
   stderr:read_start(wrap(function(err, chunk)
-    if (err) then error(err, chunk) end
+    if (err) then
+      error(err, chunk)
+    end
   end))
 end
 
@@ -106,7 +94,9 @@ end
 function M.fetch_feed()
   local xmlUrl = utils.get_url(api.nvim_get_current_line())
 
-  if (not xmlUrl) then error("Invalid url") end
+  if (not xmlUrl) then
+    error("Invalid url")
+  end
 
   local function callback(parsed_feed)
     local latest, total = db.read_entry_stats(parsed_feed.xmlUrl)
@@ -117,16 +107,12 @@ function M.fetch_feed()
   web_request(xmlUrl, callback)
 end
 
-function update_feed_line(parsed_feed)
-  local latest, total = db.read_entry_stats(parsed_feed.xmlUrl)
-  buffer.update_feed_line(parsed_feed.xmlUrl, latest, total)
-end
-
 function M.fetch_all_feeds()
-  local feeds = {}
   for line in io.lines(feeds_file) do
     local xmlUrl = utils.get_url(line)
-    if (xmlUrl) then web_request(xmlUrl, update_feed_line) end
+    if (xmlUrl) then
+      web_request(xmlUrl, update_feed_line)
+    end
   end
 end
 
@@ -139,23 +125,31 @@ function M.import_opml(opml_file)
     local type = line:match("type=\"(.-)\"")
     local link = line:match("xmlUrl=\"(.-)\"")
     local title = line:match("title=\"(.-)\"")
-    if not title then title = line:match("text=\"(.-)\"") end
+    if not title then
+      title = line:match("text=\"(.-)\"")
+    end
 
-    if type and title and link then feeds[#feeds + 1] = link .. " " .. title end
+    if type and title and link then
+      feeds[#feeds + 1] = link .. " " .. title
+    end
   end
 
   -- Dump 'em into nvim.rss
   local nvim_rss, err = io.open(feeds_file, "a+")
-  if err then error(err) end
+  if err then
+    error(err)
+  end
   nvim_rss:write("\n\nOPML IMPORT\n-----\n")
   nvim_rss:write(table.concat(feeds, "\n"))
   nvim_rss:flush()
   nvim_rss:close()
 end
 
-function M.view_feed(feed_url)
+function M.view_feed()
   local url = utils.get_url(vim.api.nvim_get_current_line())
-  if (not url) then error("Invalid url") end
+  if (not url) then
+    error("Invalid url")
+  end
   open_entries_split({
     xmlUrl = url,
   })
@@ -165,8 +159,6 @@ function M.setup(user_options)
   -- setup options
   options.feeds_dir = user_options.feeds_dir or "~"
   options.verbose = user_options.verbose or false
-
-  if (options.feeds_dir[#options.feeds_dir] == "/") then end
 
   feeds_file = options.feeds_dir .. "/nvim.rss"
   feeds_db = options.feeds_dir .. "/nvim.rss.db"

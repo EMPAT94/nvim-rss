@@ -1,61 +1,81 @@
-local BUFFER = {}
+local M = {}
 
 local sanitize = require("nvim-rss.modules.utils").sanitize
 
-local cmd = vim.cmd
-
-function BUFFER.insert_entries(entries)
-  local a = vim.fn.append
-  local l = vim.fn.line
+function M.insert_entries(entries)
+  local append = vim.fn.append
+  local line = vim.fn.line
 
   for i, entry in ipairs(entries) do
-    a(l("$"), "")
-    a(l("$"), "")
-    a(l("$"), entry.title)
-    a(l("$"), "------------------------")
-    a(l("$"), entry.link)
-    a(l("$"), "")
-    if (entry.summary) then a(l("$"), sanitize(entry.summary)) end
+    append(line("$"), "")
+    append(line("$"), "")
+    append(line("$"), entry.title)
+    append(line("$"), "------------------------")
+    append(line("$"), entry.link)
+    append(line("$"), "")
+    if (entry.summary) then
+      append(line("$"), sanitize(entry.summary))
+    end
   end
 
-  cmd("0")
+  vim.cmd("0")
 end
 
-function BUFFER.update_feed_line(xmlUrl, latest, total)
-  cmd([[ let win = bufwinnr("nvim.rss")]])
-  cmd("/" .. xmlUrl:gsub("/", "\\/"))
-  cmd("nohlsearch")
-  cmd("normal 0I ")
-  cmd("normal 0dth")
-  cmd("normal I[" .. latest .. "/" .. total .. "] ")
+function M.update_feed_line(xmlUrl, latest, total)
+  vim.cmd([[ let win = bufwinnr("nvim.rss")]])
+  vim.cmd("/" .. xmlUrl:gsub("/", "\\/"))
+  vim.cmd("nohlsearch")
+  vim.cmd("normal 0I ")
+  vim.cmd("normal 0dth")
+  vim.cmd("normal I[" .. latest .. "/" .. total .. "] ")
 end
 
-function BUFFER.insert_feed_info(feed_info)
-  cmd("normal o " .. feed_info.title)
-  cmd("center")
-  cmd("normal o")
+function M.insert_feed_info(feed_info)
+  vim.cmd("normal o " .. feed_info.title)
+  vim.cmd("center")
+  vim.cmd("normal o")
   if feed_info.htmlUrl then
-    cmd("normal o " .. feed_info.htmlUrl)
-    cmd("center")
+    vim.cmd("normal o " .. feed_info.htmlUrl)
+    vim.cmd("center")
   end
-  cmd("normal o")
+  vim.cmd("normal o")
   if (feed_info.subtitle) then
-    cmd("normal o " .. feed_info.subtitle)
-    cmd("center")
+    vim.cmd("normal o " .. feed_info.subtitle)
+    vim.cmd("center")
   end
-  cmd("normal o")
+  vim.cmd("normal o")
 
   --[[ if (options.verbose) then
-    cmd("normal o VERSION : " .. feed_info.version)
-    cmd("normal o FORMAT : " .. feed_info.format)
-    cmd("normal o UPDATED : " .. feed_info.updated)
-    cmd("normal o RIGHTS : " .. feed_info.rights)
-    cmd("normal o GENERATOR : " .. feed_info.generator)
-    cmd("normal o AUTHOR : " .. feed_info.author)
+    vim.cmd("normal o VERSION : " .. feed_info.version)
+    vim.cmd("normal o FORMAT : " .. feed_info.format)
+    vim.cmd("normal o UPDATED : " .. feed_info.updated)
+    vim.cmd("normal o RIGHTS : " .. feed_info.rights)
+    vim.cmd("normal o GENERATOR : " .. feed_info.generator)
+    vim.cmd("normal o AUTHOR : " .. feed_info.author)
   end ]]
 
-  cmd("normal o ========================================")
-  cmd("center")
+  vim.cmd("normal o ========================================")
+  vim.cmd("center")
 end
 
-return BUFFER
+function M.create_feed_buffer()
+  vim.cmd([[
+
+    let win = bufwinnr("__FEED__")
+
+    if win == -1
+      vsplit __FEED__
+      setlocal buftype=nofile
+      setlocal nobackup noswapfile nowritebackup
+      setlocal noautoindent nosmartindent
+      setlocal nonumber norelativenumber
+      setlocal filetype=markdown
+    else
+      exe win . "winvim.cmd w"
+      normal! ggdG
+    endif
+
+  ]])
+end
+
+return M
