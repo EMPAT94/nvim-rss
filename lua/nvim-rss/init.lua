@@ -116,6 +116,25 @@ function M.fetch_all_feeds()
   end
 end
 
+function M.fetch_feeds_by_category()
+
+  local t = vim.api.nvim_exec([[
+    execute ':silent normal vip'
+    echo getline("'<", "'>")
+  ]], true)
+
+  local category = vim.api.nvim_eval(t)
+
+  for i = 1, #category do
+    local line = category[i]
+    local xmlUrl = utils.get_url(line)
+    if (xmlUrl) then
+      web_request(xmlUrl, update_feed_line)
+    end
+  end
+
+end
+
 function M.import_opml(opml_file)
   print("Importing ", opml_file, "...")
 
