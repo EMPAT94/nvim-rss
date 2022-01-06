@@ -57,6 +57,14 @@ Opens nvim.rss file where all the feeds are listed. By default `~/nvim.rss`, see
 
 Pulls updates for the feed under cursor and opens a vertical split to show the entries.
 
+* Fetch feeds by category: `fetch_feeds_by_category()`
+
+Pulls update for all feeds in the category (paragraph) under cursor
+
+* Fetch feeds by visual range: `fetch_selected_feeds()`
+
+Pulls update for all feeds that are selected in visual range
+
 * Fetch all feed: `fetch_all_feeds()`
 
 Fetches data for all feeds in nvim.rss and updates the corresponding counts if nvim.rss is loaded in a buffer.
@@ -81,6 +89,10 @@ command! FetchFeed lua require("nvim-rss").fetch_feed()
 
 command! FetchAllFeeds lua require("nvim-rss").fetch_all_feeds()
 
+command! FetchFeedsByCategory lua require("nvim-rss").fetch_feeds_by_category()
+
+command! -range FetchSelectedFeeds lua require("nvim-rss").fetch_selected_feeds()
+
 command! ViewFeed lua require("nvim-rss").view_feed()
 
 command! -nargs=1 ImportOpml lua require("nvim-rss").import_opml(<args>)
@@ -92,6 +104,10 @@ command! -nargs=1 ImportOpml lua require("nvim-rss").import_opml(<args>)
 :OpenRssView
 
 :FetchFeed
+
+:FetchFeedsByCategory
+
+:FetchSelectedFeeds
 
 :FetchAllFeeds
 
@@ -128,8 +144,8 @@ v0.3
 
 - [ ] Clean database, reset everything
 - [ ] Mark favorite feeds, star entries
-- [ ] Fetch inside category
-- [ ] Fetch inside visual range (selected lines)
+- [X] Fetch inside category
+- [X] Fetch inside visual range (selected lines)
 - [ ] Release v0.3 (Deadline: ~3rd Dec 2021~ 7th Jan 2022)
 
 v0.4 and above (Tentative)
