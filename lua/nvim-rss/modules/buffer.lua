@@ -21,13 +21,15 @@ function M.insert_entries(entries)
   vim.cmd("0")
 end
 
-function M.update_feed_line(xmlUrl, latest, total)
-  vim.cmd([[ let win = bufwinnr("nvim.rss")]])
-  vim.cmd("/" .. xmlUrl:gsub("/", "\\/"))
+function M.update_feed_line(opt)
+  vim.cmd("/" .. opt.xmlUrl:gsub("/", "\\/"))
   vim.cmd("nohlsearch")
-  vim.cmd("normal 0I ")
   vim.cmd("normal 0dth")
-  vim.cmd("normal I[" .. latest .. "/" .. total .. "] ")
+  if (opt.latest == nil and opt.total == nil) then
+    return
+  else
+    vim.cmd("normal I(" .. os.date(opt.date_format, opt.update_date) .. ") [" .. opt.latest .. "/" .. opt.total .. "] ")
+  end
 end
 
 function M.insert_feed_info(feed_info)

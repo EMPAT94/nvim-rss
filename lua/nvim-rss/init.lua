@@ -17,9 +17,15 @@ local function open_entries_split(parsed_feed)
   buffer.insert_entries(entries)
 end
 
-local function update_feed_line(parsed_feed)
-  local latest, total = db.read_entry_stats(parsed_feed.xmlUrl)
-  buffer.update_feed_line(parsed_feed.xmlUrl, latest, total)
+local function update_line(parsed_feed)
+  local latest, total, update_date = db.read_entry_stats(parsed_feed.xmlUrl)
+  buffer.update_feed_line({
+    xmlUrl = parsed_feed.xmlUrl,
+    latest = latest,
+    total = total,
+    update_date = update_date,
+    date_format = options.date_format,
+  })
 end
 
 local function web_request(url, callback)
@@ -81,7 +87,7 @@ end
 local function fetch_and_update(line)
   local xmlUrl = utils.get_url(line)
   if (xmlUrl) then
-    web_request(xmlUrl, update_feed_line)
+    web_request(xmlUrl, update_line)
   end
 end
 
@@ -97,8 +103,14 @@ function M.fetch_feed()
   end
 
   local function callback(parsed_feed)
-    local latest, total = db.read_entry_stats(parsed_feed.xmlUrl)
-    buffer.update_feed_line(parsed_feed.xmlUrl, latest, total)
+    local latest, total, update_date = db.read_entry_stats(parsed_feed.xmlUrl)
+    buffer.update_feed_line({
+      xmlUrl = parsed_feed.xmlUrl,
+      latest = latest,
+      total = total,
+      update_date = update_date,
+      date_format = options.date_format,
+    })
     open_entries_split(parsed_feed)
   end
 
@@ -142,7 +154,6 @@ end
 function M.import_opml(opml_file)
   print("Importing ", opml_file, "...")
 
-  -- Read all feeds from file
   local feeds = {}
   for line in io.lines(opml_file) do
     local type = line:match("type=\"(.-)\"")
@@ -157,7 +168,6 @@ function M.import_opml(opml_file)
     end
   end
 
-  -- Dump 'em into nvim.rss
   local nvim_rss, err = io.open(feeds_file, "a+")
   if err then
     error(err)
@@ -180,15 +190,32 @@ function M.view_feed()
   })
 end
 
+-- Removes all entries associated with a feed
+function M.clean_feed()
+  local xmlUrl = utils.get_url(vim.api.nvim_get_current_line())
+  if (not xmlUrl) then
+    error("Invalid url")
+  end
+  local removed = db.remove_entries(xmlUrl)
+  if removed then
+    buffer.update_feed_line(xmlUrl)
+  end
+end
+
+-- Trunace all tables
+function M.reset_db()
+  db.truncate_tables()
+end
+
 function M.setup(user_options)
-  -- setup options
+
   options.feeds_dir = user_options.feeds_dir or "~"
   options.verbose = user_options.verbose or false
+  options.date_format = user_options.date_format or "%x %r"
 
   feeds_file = options.feeds_dir .. "/nvim.rss"
   feeds_db = options.feeds_dir .. "/nvim.rss.db"
 
-  -- setup database
   db.create(feeds_db)
 end
 
