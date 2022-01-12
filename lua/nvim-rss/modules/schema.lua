@@ -18,7 +18,6 @@ M.FEED_SCHEMA = {
     "text",
     required = true,
   },
-  favourite = "boolean",
   subtitle = "text",
   version = "text",
   htmlUrl = "text",
@@ -46,8 +45,6 @@ M.ENTRY_SCHEMA = {
     required = true,
     reference = "feeds.link",
   },
-  starred = "boolean",
-
   fetched = "number", -- timestamp of when feed was fetched
 }
 
