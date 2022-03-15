@@ -19,13 +19,27 @@ https://user-images.githubusercontent.com/9110181/141071168-ce671cd5-3f9b-4b68-b
 2. [curl](https://curl.se/) | Usually pre-installed on most systems
 3. [sqlite3](https://sqlite.org/index.html) | Usually pre-installed on some systems
 4. [tami5/sqlite.lua](https://github.com/tami5/sqlite.lua) | Either as plugin or luarock
-5. [slact/lua-feedparser](https://github.com/slact/lua-feedparser) | Install as system luarock (not in packer)
+5. [tomasguisasola/luaexpat](https://lunarmodules.github.io/luaexpat/) | Install as system luarock (not in packer)
 
 ## Installation
 
 **Tested on linux, may work on macos. Probably won't work on windows.**
 
-If `vim-plug` then
+If using `packer.nvim` (recommended) then
+
+```lua
+
+use {
+  "empat94/nvim-rss",
+  requires = { "tami5/sqlite.lua" },
+  rocks = { "luaexpat" },
+  config = function()
+    require("nvim-rss").setup({...})
+  end
+}
+```
+
+Else if using `vim-plug` then
 
 ```vim
 Plug `tami5/sqlite.lua`
@@ -33,20 +47,17 @@ Plug `tami5/sqlite.lua`
 Plug 'empat94/nvim-rss'
 ```
 
-If `packer` then
-
-```lua
-
-use {
-  "empat94/nvim-rss",
-  requires = { "tami5/sqlite.lua" },
-  config = function()
-    require("nvim-rss").setup({...})
-  end
-}
+```sh
+luarocks install luaexpat
 ```
 
-Else your usual way of installing plugins
+```vim
+lua << EOF
+require("nvim-rss").setup({})
+EOF
+```
+
+Else your usual way of installing plugins and luarocks
 
 ## Setup
 
@@ -70,39 +81,39 @@ If using init.vim, wrap the code inside `lua << EOF ... EOF`
 
 - Open RSS file: `open_feeds_tab()`
 
-Opens nvim.rss file where all the feeds are listed. By default `~/nvim.rss`, see [Setup](#Setup) to change default dir.
+  Opens nvim.rss file where all the feeds are listed. By default `~/nvim.rss`, see [Setup](#Setup) to change default dir.
 
 - Fetch and view a feed: `fetch_feed()`
 
-Pulls updates for the feed under cursor and opens a vertical split to show the entries.
+  Pulls updates for the feed under cursor and opens a vertical split to show the entries.
 
 - Fetch feeds by category: `fetch_feeds_by_category()`
 
-Pulls update for all feeds in the category (paragraph) under cursor.
+  Pulls update for all feeds in the category (paragraph) under cursor.
 
 - Fetch feeds by visual range: `fetch_selected_feeds()`
 
-Pulls update for all feeds that are selected in visual range.
+  Pulls update for all feeds that are selected in visual range.
 
 - Fetch all feeds: `fetch_all_feeds()`
 
-Fetches data for all feeds in nvim.rss and updates the corresponding counts if nvim.rss is loaded in a buffer.
+  Fetches data for all feeds in nvim.rss and updates the corresponding counts if nvim.rss is loaded in a buffer.
 
 - View a feed: `view_feed()`
 
-Opens entries for feed under cursor in a vertical split. This does not fetch data from server, instead pulling stored content from database.
+  Opens entries for feed under cursor in a vertical split. This does not fetch data from server, instead pulling stored content from database.
 
 - Clean a feed: `clean_feed()`
 
-Removes all entires associated with a particular feed. Useful if you are encountering SQL errors.
+  Removes all entires associated with a particular feed. Useful if you are encountering SQL errors.
 
 - Reset everything: `reset_db()`
 
-Truncates all tables. Use with caution. Might be useful when there is an unforeseen db-related error occurs. If this doesn't work, delete `nvim.rss.db` and restart neovim instance.
+  Truncates all tables. Use with caution. Might be useful when there is an unforeseen db-related error occurs. If this doesn't work, delete `nvim.rss.db` and restart neovim instance.
 
 - Import OPML file: `import_opml(opml_file)`
 
-Parses the supplied file, extracts feed links if they exist and dumps them under "OPML Import" inside nvim.rss. They are not added to database unless you explicitly fetch feeds for the links!
+  Parses the supplied file, extracts feed links if they exist and dumps them under "OPML Import" inside nvim.rss. They are not added to database unless you explicitly fetch feeds for the links!
 
 ---
 
