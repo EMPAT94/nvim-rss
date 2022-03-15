@@ -19,7 +19,7 @@ https://user-images.githubusercontent.com/9110181/141071168-ce671cd5-3f9b-4b68-b
 2. [curl](https://curl.se/) | Usually pre-installed on most systems
 3. [sqlite3](https://sqlite.org/index.html) | Usually pre-installed on some systems
 4. [tami5/sqlite.lua](https://github.com/tami5/sqlite.lua) | Either as plugin or luarock
-5. [tomasguisasola/luaexpat](https://lunarmodules.github.io/luaexpat/) | Install as system luarock (not in packer)
+5. [tomasguisasola/luaexpat](https://lunarmodules.github.io/luaexpat/) | From luarocks
 
 ## Installation
 
@@ -33,28 +33,33 @@ use {
   "empat94/nvim-rss",
   requires = { "tami5/sqlite.lua" },
   rocks = { "luaexpat" },
-  config = function()
-    require("nvim-rss").setup({...})
-  end
+  config = function() require("nvim-rss").setup({...}) end
 }
+
 ```
 
 Else if using `vim-plug` then
 
 ```vim
+
 Plug `tami5/sqlite.lua`
 
 Plug 'empat94/nvim-rss'
+
 ```
 
 ```sh
+
 luarocks install luaexpat
+
 ```
 
 ```vim
+
 lua << EOF
-require("nvim-rss").setup({})
+  require("nvim-rss").setup({...})
 EOF
+
 ```
 
 Else your usual way of installing plugins and luarocks
@@ -148,7 +153,9 @@ vim.cmd [[ -- no need for vim.cmd if vim file
 NOTE: The command ImportOpml requires a full path and surrounding quotes.
 
 ```vim
+
 :ImportOpml "/home/user/Documents/rss-file.opml"
+
 ```
 
 _Checkout my feeds list [here](https://github.com/EMPAT94/dotfiles/blob/main/nvim/.config/nvim/nvim.rss)_
