@@ -1,8 +1,8 @@
-local feedparser = require("feedparser")
 
 local db = require("nvim-rss.modules.db")
 local utils = require("nvim-rss.modules.utils")
 local buffer = require("nvim-rss.modules.buffer")
+local feedparser = require("nvim-rss.modules.feedparser")
 
 local M = {}
 local CURL = "curl"
